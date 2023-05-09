@@ -15,24 +15,25 @@ class ListaDobleEnlazada {
 		};
 		Nodo nodo;
 		
-		Nodo* inicio = NULL;
-		Nodo* final = NULL;
+		
 		
 		struct NodoDeNodo{
-			Nodo contenido;
+			Nodo* contenido;
 			int pos;
 			NodoDeNodo* siguiente;
 			NodoDeNodo* anterior;
+			Nodo* inicio = NULL;
+			Nodo* final = NULL;
 		};
 		
 		NodoDeNodo* primero = NULL;
 		NodoDeNodo* ultimo = NULL;
 
 	public:
-	    void insertarInicio(string contenido, int pos){
+	    void insertarInicio(string contenido, int* pos, Nodo* inicio, Nodo* final){
 	    	Nodo* nuevo = new Nodo;
 	    	nuevo->contenido = contenido;
-	    	nuevo->pos = pos;
+	    	nuevo->pos = *pos;
 	    	nuevo->anterior = NULL;
 	    	nuevo->siguiente = inicio;
 	    	inicio = nuevo;
@@ -41,10 +42,10 @@ class ListaDobleEnlazada {
 			}
 		}
 		
-		void insertarFinal(string contenido, int pos){
+		void insertarFinal(string contenido, int* pos, Nodo* inicio, Nodo* final){
 			Nodo* nuevo = new Nodo;
 			nuevo->contenido = contenido;
-			nuevo->pos = pos;
+			nuevo->pos = *pos;
 			nuevo->siguiente = NULL;
 			if(inicio == NULL){
 				inicio = nuevo;
@@ -61,7 +62,7 @@ class ListaDobleEnlazada {
 			final = nuevo;
 		}
 	
-		void mostrarTodo(){
+		void mostrarTodo(Nodo* inicio, Nodo* final){
 			Nodo* actual = inicio;
 			while(actual != NULL){
 				cout << "Texto actual: " << actual->contenido;
@@ -84,9 +85,9 @@ class ListaDobleEnlazada {
 			}
 		}
 		
-		void insertarFinal(int* pos, int r){
+		void listaPrincipalInsertarFinal(int* pos, int r){
 			NodoDeNodo* nuevoNodo = new NodoDeNodo;
-			//nuevoNodo->contenido = NULL;
+			nuevoNodo->contenido = NULL;
 			nuevoNodo->pos = (*pos) - r;
 			nuevoNodo->siguiente = NULL;
 			if(primero == NULL){
@@ -107,9 +108,88 @@ class ListaDobleEnlazada {
 		void mostrarListaPrincipal(){
 			NodoDeNodo* actual = primero;
 			while(actual != NULL){
-				cout << "Posicion de nodo: " << actual->pos;
+				cout << "\nPosicion de nodo: " << actual->pos;
+				
+				Nodo* a = actual->inicio;
+				while(a != NULL){
+					cout << "\n\tTexto del nodo: " << a->pos << ": " << a->contenido;
+					a = a->siguiente;
+				}
+
 				actual = actual->siguiente;
 			}
 			cout << "\nInicio: " << primero->pos << "\nFinal: " << ultimo->pos << "\n";
+		}
+
+		void buscarListaPrincipal(int* pos){
+			NodoDeNodo* n = primero;
+			Nodo* nuevo = new Nodo;
+			while(n != NULL){
+				if(n->pos == *pos){
+					//n->contenido = new Nodo;
+					n->contenido = nuevo;
+				}
+				n = n->siguiente;
+			}
+		}
+
+		string devolverContenido(int* pos){
+			NodoDeNodo* n = primero;
+			while(n != NULL){
+				if(n->pos == *pos){
+					//n->contenido = new Nodo;
+					//return n->contenido.contenido;
+				}
+				n = n->siguiente;
+			}
+			return "        ";
+		}
+
+		void insertarFinalSubLista(string* contenido, int* pos, Nodo* nuevo, NodoDeNodo* nodo){
+			
+			nuevo->contenido = *contenido;
+			nuevo->pos = *pos;
+			nuevo->siguiente = NULL;
+			if(nodo->inicio == NULL){
+				nodo->inicio = nuevo;
+			}
+			else{
+				Nodo* p = nodo->inicio;
+				Nodo* q = NULL;
+				while(p != NULL){
+					q = p;
+					p = p->siguiente;
+				}
+				q->siguiente = nuevo;
+			}
+			nodo->final = nuevo;
+		}
+
+		void llenarSubLista(int* pos, int* subPos, string* contenido){
+			NodoDeNodo* n = primero;
+			Nodo* nuevo = new Nodo;
+			while(n != NULL){
+				if(n->pos == *pos){
+					if(n->contenido == NULL){
+						n->contenido = nuevo;
+
+						insertarFinalSubLista(contenido, subPos, nuevo, n);
+						n->inicio = nuevo;
+						n->final = nuevo;
+					}
+					else{
+						insertarFinalSubLista(contenido, subPos, nuevo, n);
+						n->final = nuevo;
+					}
+					//cout << nuevo->contenido;
+
+					
+
+				cout << "n inicio: " << n->inicio->contenido << "\nn final: " << n->final->contenido;
+				}
+				n = n->siguiente;
+			}
+			cout << "\n\n";
+			//cout << n->contenido->contenido;
 		}
 };

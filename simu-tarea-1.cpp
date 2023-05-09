@@ -56,23 +56,26 @@ void generarHoja(int* nFilas, int* nColumnas, int* filaActual, int* columnaActua
 	}
 }
 
-void crearListaPrincipal(int* filas, ListaDobleEnlazada* lista){
+void crearListaPrincipal(int* filas, int* columnas, ListaDobleEnlazada* lista){
 	for(int i = 0; i < *filas; i++){
-		(*lista).insertarFinal(&i, 0);
+		(*lista).listaPrincipalInsertarFinal(&i, 0);
+		
 	}
 }
 
 void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
 	string contenido = "";
 	
-	cout << "\nEscriba una palabra para almacenar en la celda " << char(65 + *columnaActual) << *filaActual + 1;
+	cout << "\nEscriba una palabra para almacenar en la celda " << char(65 + (*columnaActual)/10) << *filaActual + 1;
 	cout << "\n (Maximo 8 caracteres): ";
 	cin >> contenido;
 	if(contenido.length() > 8) cout << "\n\nLa palabra contiene mas de 8 caracteres\n\n";
 	
-	//int pos = 
+	int pos = (*filaActual) * 100 + (*columnaActual)/10;
+	cout << pos;
 	
-	
+	lista->llenarSubLista(filaActual, &pos, &contenido);
+	lista->mostrarListaPrincipal();
 }
 
 void moverCelda(int* filas, int* columnas, int* filaActual, int* columnaActual, int* opc){
@@ -85,7 +88,6 @@ void moverCelda(int* filas, int* columnas, int* filaActual, int* columnaActual, 
 		case 7:
 			if(*columnaActual > (*columnas - 2) * 11) cout << "\n\nNo es posible moverse a la derecha\n\n";
 			else *columnaActual += 11;
-			cout << *columnaActual;
 			break;
 		case 8:
 			if(*filaActual == 0) cout << "\n\nNo es posible moverse arriba\n\n";
@@ -115,18 +117,17 @@ void agregarFila(int* fila, int* columna, ListaDobleEnlazada* lista){
 	if(*fila > 15) cout << "\n\nHa alcanzado el maximo de filas permitidas\n\n";
 	else{
 		*fila += 1;
-		(*lista).insertarFinal(fila, 1);
+		(*lista).listaPrincipalInsertarFinal(fila, 1);
 	}
 }
 
 int menuAcciones(){
 	int opc = 0, f = 0, c = 0, nFilas = 5, nColumnas = 5;
 	ListaDobleEnlazada lista;
-	crearListaPrincipal(&nFilas, &lista);
+	crearListaPrincipal(&nFilas, &nColumnas, &lista);
 	
 	do{
 		cout << "Se encuentra en la celda: " << char(65 + (c/10)) << f + 1<< "\n";
-		lista.mostrarListaPrincipal();
 		generarHoja(&nFilas, &nColumnas, &f, &c);
 		cout << " \nSeleccione una opcion:\n\n";
 		cout << "1. Escribir\n2. Moverse de celda\n3. Copiar\n4. Cortar\n5. Pegar\n6. Moverse a la izquierda\n7. Moverse a la derecha\n8. Moverse arriba\n9. Moverse abajo\n10. Agregar columna\n11. Agregar fila\n12. Guardar\n13. Menu principal\nOpcion:";
@@ -175,6 +176,8 @@ int menuPrincipal(){
 int main(){
 	
 	int opcMenuPrincipal, opcMenuAcciones;
+	// int filas = 5, col = 5, pos = 0;
+	// string contenido = "HOLA";
 	
 	do{
 		opcMenuPrincipal = menuPrincipal();
@@ -184,14 +187,12 @@ int main(){
 			default: cout << "\nOpcion invalida!";
 		}
 	}while(opcMenuPrincipal != 3);
-		//generarHoja(nFilas, nColumnas);
-		//opcMenuAcciones = menuAcciones();
-		
-	ListaDobleEnlazada dll;
-	dll.insertarInicio("Hola", 11);
-	dll.insertarInicio("Adios", 11);
-	dll.insertarFinal("Mundo", 11);
-	dll.mostrarTodo();
+
+	// ListaDobleEnlazada lista;
+	// crearListaPrincipal(&filas, &col, &lista);
+	// lista.mostrarListaPrincipal();
+	// lista.llenarSubLista(&pos, &pos, &contenido);
+	
 	
 	return 0;
 }
