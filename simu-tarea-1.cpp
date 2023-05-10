@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <limits>
 #include "doublelist.h"
 
 using namespace std;
@@ -142,6 +143,12 @@ int menuAcciones(){
 		cout << "1. Escribir\n2. Moverse de celda\n3. Copiar\n4. Cortar\n5. Pegar\n6. Moverse a la izquierda\n7. Moverse a la derecha\n8. Moverse arriba\n9. Moverse abajo\n10. Agregar columna\n11. Agregar fila\n12. Guardar\n13. Menu principal\nOpcion:";
 		cin >> opc;
 		
+		if(cin.fail()){
+			opc = 14;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(),'\n');
+		}
+		
 		switch(opc){
 			case 1: escribirTexto(&nFilas, &nColumnas, &f, &c, &lista); break;
 			case 2: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
@@ -170,6 +177,11 @@ int menuPrincipal(){
 		cout << "Bienvenido\n\n";
 		cout << "1. Nuevo\n2. Abrir\n3. Cerrar\nOpcion: ";
 		cin >> opcMenuPrincipal;
+		if(cin.fail()){
+			opcMenuPrincipal = 4;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(),'\n');
+		}
 	
 		switch(opcMenuPrincipal){
 			case 1: return 1; break;
