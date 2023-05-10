@@ -133,14 +133,19 @@ class ListaDobleEnlazada {
 			}
 		}
 
-		string devolverContenido(int* pos){
-			NodoDeNodo* n = primero;
-			while(n != NULL){
-				if(n->pos == *pos){
-					//n->contenido = new Nodo;
-					//return n->contenido.contenido;
+		string devolverContenido(int* pos, int* subPos){
+			NodoDeNodo* actual = primero;
+			while(actual != NULL){
+				if(actual->pos == *pos){
+					Nodo* a = actual->inicio;
+					while(a != NULL){
+						if(a->pos == *subPos){
+							return a->contenido;
+						}
+						a = a->siguiente;
+					}
 				}
-				n = n->siguiente;
+				actual = actual->siguiente;
 			}
 			return "        ";
 		}

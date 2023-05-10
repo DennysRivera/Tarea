@@ -29,8 +29,9 @@ void generarEncabezados(int nColumnas){
 	cout << "|\n";
 }
 
-void generarHoja(int* nFilas, int* nColumnas, int* filaActual, int* columnaActual){
-	int espaciosTotales = *nColumnas * 11;
+void generarHoja(int* nFilas, int* nColumnas, int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
+	int espaciosTotales = *nColumnas * 11, pos;
+	string contenido;
 	
 	generarEncabezados(*nColumnas);
 	
@@ -42,10 +43,14 @@ void generarHoja(int* nFilas, int* nColumnas, int* filaActual, int* columnaActua
 		}
 		if(j < 9) cout << "|\n " << j + 1;
 		else cout << "|\n" << j + 1;
-		for(int i = 0; i < espaciosTotales; i++){
+		for(int i = 0; i < *nColumnas + 1; i++){
+			pos = (j) * 100 + i -1;
+			contenido = lista->devolverContenido(&j, &pos);
 			if((i % 11 == 0) || (i % espaciosTotales == 0)) cout << "|";
-			else if(*filaActual == j && *columnaActual + 1 == i) cout << ">";
-			else cout << " ";
+			//else if(*filaActual == j && *columnaActual + 1 == i) cout << ">";
+			else cout << " " << contenido << " |";
+			
+			
 		}
 		cout << "|\n  ";
 		for(int i = 0; i < espaciosTotales; i++){
@@ -70,12 +75,16 @@ void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActua
 	cout << "\n (Maximo 8 caracteres): ";
 	cin >> contenido;
 	if(contenido.length() > 8) cout << "\n\nLa palabra contiene mas de 8 caracteres\n\n";
-	
-	int pos = (*filaActual) * 100 + (*columnaActual)/10;
-	cout << pos;
-	
-	lista->llenarSubLista(filaActual, &pos, &contenido);
-	lista->mostrarListaPrincipal();
+	else{
+		for(int i = contenido.length(); i < 8; i++)
+		contenido.push_back(' ');
+		
+		int pos = (*filaActual) * 100 + (*columnaActual)/10;
+		cout << pos;
+		
+		lista->llenarSubLista(filaActual, &pos, &contenido);
+		lista->mostrarListaPrincipal();
+	}
 }
 
 void moverCelda(int* filas, int* columnas, int* filaActual, int* columnaActual, int* opc){
@@ -128,7 +137,7 @@ int menuAcciones(){
 	
 	do{
 		cout << "Se encuentra en la celda: " << char(65 + (c/10)) << f + 1<< "\n";
-		generarHoja(&nFilas, &nColumnas, &f, &c);
+		generarHoja(&nFilas, &nColumnas, &f, &c, &lista);
 		cout << " \nSeleccione una opcion:\n\n";
 		cout << "1. Escribir\n2. Moverse de celda\n3. Copiar\n4. Cortar\n5. Pegar\n6. Moverse a la izquierda\n7. Moverse a la derecha\n8. Moverse arriba\n9. Moverse abajo\n10. Agregar columna\n11. Agregar fila\n12. Guardar\n13. Menu principal\nOpcion:";
 		cin >> opc;
