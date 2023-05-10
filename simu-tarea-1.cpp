@@ -48,9 +48,11 @@ void generarHoja(int* nFilas, int* nColumnas, int* filaActual, int* columnaActua
 			pos = (j) * 100 + i -1;
 			contenido = lista->devolverContenido(&j, &pos);
 			if((i % 11 == 0) || (i % espaciosTotales == 0)) cout << "|";
-			//else if(*filaActual == j && *columnaActual + 1 == i) cout << ">";
-			else cout << " " << contenido << " |";
-			
+			//else if(*filaActual == j && *columnaActual/10 + 1 == i) cout << ">";
+			else{
+				if(*filaActual == j && *columnaActual/10 + 1 == i) cout << ">" << contenido << " |";
+				else cout << " " << contenido << " |";
+			}
 			
 		}
 		cout << "|\n  ";
