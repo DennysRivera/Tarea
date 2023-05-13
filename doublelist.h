@@ -149,6 +149,22 @@ class ListaDobleEnlazada {
 			}
 			return "        ";
 		}
+		
+		void modificarContenido(string* contenido, int* pos, int* subPos){
+			NodoDeNodo* actual = primero;
+			while(actual != NULL){
+				if(actual->pos == *pos){
+					Nodo* a = actual->inicio;
+					while(a != NULL){
+						if(a->pos == *subPos){
+							a->contenido = *contenido;
+						}
+						a = a->siguiente;
+					}
+				}
+				actual = actual->siguiente;
+			}
+		}
 
 		void insertarFinalSubLista(string* contenido, int* pos, Nodo* nuevo, NodoDeNodo* nodo){
 			
@@ -182,6 +198,7 @@ class ListaDobleEnlazada {
 						n->inicio = nuevo;
 						n->final = nuevo;
 					}
+					//Posiblemente se puede retirar este else
 					else{
 						insertarFinalSubLista(contenido, subPos, nuevo, n);
 						n->final = nuevo;

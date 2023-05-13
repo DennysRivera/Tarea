@@ -72,7 +72,7 @@ void crearListaPrincipal(int* filas, int* columnas, ListaDobleEnlazada* lista){
 }
 
 void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
-	string contenido = "";
+	string contenido = "", comparasion = "";
 	
 	cout << "\nEscriba una palabra para almacenar en la celda " << char(65 + (*columnaActual)/10) << *filaActual + 1;
 	cout << "\n (Maximo 8 caracteres): ";
@@ -85,14 +85,35 @@ void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActua
 		int pos = (*filaActual) * 100 + (*columnaActual)/10;
 		cout << pos;
 		
-		lista->llenarSubLista(filaActual, &pos, &contenido);
+		comparasion = lista->devolverContenido(filaActual, &pos);
+		comparasion.at(0) == ' ' ? lista->llenarSubLista(filaActual, &pos, &contenido) : lista->modificarContenido(&contenido, filaActual, &pos);
 		lista->mostrarListaPrincipal();
+	}
+}
+
+void ingresarCelda(int* filas, int* columnas, int* filaActual, int* columnaActual){
+	char col = ' ';
+	int fila = 0;
+	
+	cout << "Ingrese la celda destino (ColumnaFila): ";
+	cin >> col;
+	col = toupper(col);
+	cin.clear();
+	cin >> fila;
+	
+	if(fila < 0 || fila > *filas ) cout << "\nNo es posible moverse a la fila ingresada (" << fila << ")";
+	else if((int(col) - 65) < 0 || (int(col) - 65) > *columnas - 1) cout << "\nNo es posible moverse a la columna ingresada (" << col << ")";
+	else{
+		*filaActual = fila - 1;
+		*columnaActual = (int(col) - 65) * 11;
 	}
 }
 
 void moverCelda(int* filas, int* columnas, int* filaActual, int* columnaActual, int* opc){
 	switch(*opc){
-		case 2: break;
+		case 2:
+			ingresarCelda(filas, columnas, filaActual, columnaActual);
+			break;
 		case 6:
 			if(*columnaActual == 0) cout << "\n\nNo es posible moverse a la izquierda\n\n";
 			else *columnaActual -= 11;
@@ -139,7 +160,7 @@ int menuAcciones(){
 	crearListaPrincipal(&nFilas, &nColumnas, &lista);
 	
 	do{
-		cout << "Se encuentra en la celda: " << char(65 + (c/10)) << f + 1<< "\n";
+		cout << "\n\nSe encuentra en la celda: " << char(65 + (c/10)) << f + 1<< "\n\n";
 		generarHoja(&nFilas, &nColumnas, &f, &c, &lista);
 		cout << " \nSeleccione una opcion:\n\n";
 		cout << "1. Escribir\n2. Moverse de celda\n3. Copiar\n4. Cortar\n5. Pegar\n6. Moverse a la izquierda\n7. Moverse a la derecha\n8. Moverse arriba\n9. Moverse abajo\n10. Agregar columna\n11. Agregar fila\n12. Guardar\n13. Menu principal\nOpcion:";
