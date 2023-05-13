@@ -72,7 +72,7 @@ void crearListaPrincipal(int* filas, int* columnas, ListaDobleEnlazada* lista){
 }
 
 void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
-	string contenido = "", comparasion = "";
+	string contenido = "", comparacion = "";
 	
 	cout << "\nEscriba una palabra para almacenar en la celda " << char(65 + (*columnaActual)/10) << *filaActual + 1;
 	cout << "\n (Maximo 8 caracteres): ";
@@ -85,8 +85,8 @@ void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActua
 		int pos = (*filaActual) * 100 + (*columnaActual)/10;
 		cout << pos;
 		
-		comparasion = lista->devolverContenido(filaActual, &pos);
-		comparasion.at(0) == ' ' ? lista->llenarSubLista(filaActual, &pos, &contenido) : lista->modificarContenido(&contenido, filaActual, &pos);
+		comparacion = lista->devolverContenido(filaActual, &pos);
+		comparacion.compare("        ") == 0 ? lista->llenarSubLista(filaActual, &pos, &contenido) : lista->modificarContenido(&contenido, filaActual, &pos);
 		lista->mostrarListaPrincipal();
 	}
 }
@@ -133,12 +133,21 @@ void moverCelda(int* filas, int* columnas, int* filaActual, int* columnaActual, 
 	}
 }
 
-void copiarTexto(){
+string copiarTexto(int* filaActual, int* columnaActual, ListaDobleEnlazada* lista, int* opc){
+	string contenido = lista->devolverContenido(filaActual, columnaActual);
+	if(contenido.compare("        ") == 0) cout << "\nLa casilla esta vacia";
+	cout << "Se copio la palabra: " << contenido;
 	
+	return contenido;
 }
 
-void pegarTexto(){
-	
+void pegarTexto(int* filaActual, int* columnaActual, ListaDobleEnlazada* lista, string* textoCopiado){
+	cout << "El texto copiado es: " << *textoCopiado;
+	int pos = (*filaActual) * 100 + (*columnaActual)/10;
+	string contenido = lista->devolverContenido(filaActual, &pos);
+	//cout << pos;
+	if(contenido.compare("        ") == 0 && *textoCopiado != "        ") lista->llenarSubLista(filaActual, &pos, textoCopiado);
+	else if(contenido != "        " && *textoCopiado != "        ") lista->modificarContenido(textoCopiado, filaActual, &pos);
 }
 
 void agregarColumna(int* fila, int* columna){
@@ -156,6 +165,7 @@ void agregarFila(int* fila, int* columna, ListaDobleEnlazada* lista){
 
 int menuAcciones(){
 	int opc = 0, f = 0, c = 0, nFilas = 5, nColumnas = 5;
+	string textoCopiado = "";
 	ListaDobleEnlazada lista;
 	crearListaPrincipal(&nFilas, &nColumnas, &lista);
 	
@@ -175,9 +185,9 @@ int menuAcciones(){
 		switch(opc){
 			case 1: escribirTexto(&nFilas, &nColumnas, &f, &c, &lista); break;
 			case 2: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
-			case 3: break;
-			case 4: break;
-			case 5: break;
+			case 3: textoCopiado = copiarTexto(&f, &c, &lista, &opc); break;
+			case 4: textoCopiado = copiarTexto(&f, &c, &lista, &opc); break;
+			case 5: pegarTexto(&f, &c, &lista, &textoCopiado); break;
 			case 6: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
 			case 7: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
 			case 8: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
