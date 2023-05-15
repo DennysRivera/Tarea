@@ -2,6 +2,7 @@
 #include <string>
 #include <cstring>
 #include <cstdlib>
+#include <typeinfo>
 
 using namespace std;
 
@@ -107,8 +108,12 @@ class ListaDobleEnlazada {
 		
 		void mostrarListaPrincipal(){
 			NodoDeNodo* actual = primero;
+			
 			while(actual != NULL){
+				Nodo* b = actual->inicio;
+				Nodo* c = actual->final;
 				cout << "\nPosicion de nodo: " << actual->pos;
+				if(b) cout << "\n\tactual->inicio: " << b->pos << " actual->final: " << c->pos;
 				
 				Nodo* a = actual->inicio;
 				while(a != NULL){
@@ -131,6 +136,50 @@ class ListaDobleEnlazada {
 				}
 				n = n->siguiente;
 			}
+		}
+		
+		void eliminarNodo(int* pos, int* subPos){
+			NodoDeNodo* actual = primero;
+			while(actual != NULL){
+				if(actual->pos == *pos){
+					Nodo* a = actual->inicio, *b = NULL;
+					while(a != NULL && a->pos != *subPos){
+						b = a;
+						a = a->siguiente;
+					}
+					cout << "Se detuvo en nodo subPos: " << a->pos << "\n";
+					
+					if(b == NULL && a->siguiente == NULL){
+						a->anterior = NULL;
+						actual->final = NULL;
+						actual->inicio = NULL;
+					}
+					
+					else if(b == NULL){
+						actual->inicio = a->siguiente;
+						actual->inicio->anterior = NULL;
+					}
+					else if(a->siguiente != NULL){
+						b->siguiente = a->siguiente;
+						a->siguiente->anterior = a->anterior;
+					}
+					else if(a->siguiente = NULL){
+						b->siguiente = NULL;
+						actual->final = a->anterior;
+					}
+					
+					else if(a == actual->final){
+						a->anterior->siguiente = NULL;
+						a->anterior = NULL;
+					}
+					
+					
+					delete(a);
+					
+				}
+				actual = actual->siguiente;
+			}
+			mostrarListaPrincipal();
 		}
 
 		string devolverContenido(int* pos, int* subPos){
@@ -181,6 +230,7 @@ class ListaDobleEnlazada {
 					q = p;
 					p = p->siguiente;
 				}
+				nuevo->anterior = q;
 				q->siguiente = nuevo;
 			}
 			nodo->final = nuevo;

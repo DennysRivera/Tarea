@@ -127,6 +127,7 @@ void moverCelda(int* filas, int* columnas, int* filaActual, int* columnaActual, 
 			else *filaActual -= 1;
 			break;
 		case 9:
+			
 			if(*filaActual == *filas - 1) cout << "\n\nNo es posible moverse abajo\n\n";
 			else *filaActual += 1;
 			break;
@@ -134,20 +135,31 @@ void moverCelda(int* filas, int* columnas, int* filaActual, int* columnaActual, 
 }
 
 string copiarTexto(int* filaActual, int* columnaActual, ListaDobleEnlazada* lista, int* opc){
-	string contenido = lista->devolverContenido(filaActual, columnaActual);
+	int pos = (*filaActual) * 100 + *columnaActual/10;
+	cout << "pos: " << pos << "\n";
+	string contenido = lista->devolverContenido(filaActual, &pos);
 	if(contenido.compare("        ") == 0) cout << "\nLa casilla esta vacia";
-	cout << "Se copio la palabra: " << contenido;
+	if(*opc == 4) lista->eliminarNodo(filaActual, &pos);
+	cout << "Se copio la palabra: " << contenido << ".";
 	
 	return contenido;
 }
 
 void pegarTexto(int* filaActual, int* columnaActual, ListaDobleEnlazada* lista, string* textoCopiado){
-	cout << "El texto copiado es: " << *textoCopiado;
+	cout << "El texto copiado es: " << *textoCopiado << ".";
 	int pos = (*filaActual) * 100 + (*columnaActual)/10;
 	string contenido = lista->devolverContenido(filaActual, &pos);
 	//cout << pos;
-	if(contenido.compare("        ") == 0 && *textoCopiado != "        ") lista->llenarSubLista(filaActual, &pos, textoCopiado);
-	else if(contenido != "        " && *textoCopiado != "        ") lista->modificarContenido(textoCopiado, filaActual, &pos);
+	if(contenido.compare("        ") == 0 && *textoCopiado != "        "){
+		lista->llenarSubLista(filaActual, &pos, textoCopiado);
+		cout << "Se pego el texto: " << *textoCopiado;
+	}
+	else if(contenido != "        " && *textoCopiado != "        "){
+		lista->modificarContenido(textoCopiado, filaActual, &pos);
+		cout << "Entro en el else if con el texto: " << *textoCopiado;
+	}
+	
+	lista->mostrarListaPrincipal();
 }
 
 void agregarColumna(int* fila, int* columna){
