@@ -278,6 +278,7 @@ class ListaDobleEnlazada {
 				j["filas"] = actual->pos + 1;
 				while(a != NULL){
 					j["Nodos"].push_back({
+						actual->pos,
 						a->pos,
 						a->contenido
 					});
@@ -323,11 +324,32 @@ class ListaDobleEnlazada {
 			archivo.close();
 
 			for(int i = 0; i < j["Nodos"].size(); i++){
-				columnas = j["Nodos"][i][0];
+				columnas = j["Nodos"][i][1];
 				columnas = columnas % 100;
 				if(columnas > mayor) mayor = columnas;
 			}
 			
 			return (mayor < 5) ? 5 : mayor;
+		}
+
+		void llenarTabla(string* nombreArchivo){
+			json j;
+			int pos = 0, subPos = 0;
+			string contenido = "";
+
+			ifstream archivo;
+			cout << *nombreArchivo << "\n";
+			archivo.open(*nombreArchivo);
+			j << archivo;
+			archivo.close();
+
+			for(int i = 0; i < j["Nodos"].size(); i++){
+				pos = j["Nodos"][i][0];
+				subPos = j["Nodos"][i][1];
+				contenido = j["Nodos"][i][2];
+				cout << "Pos: " << pos << " subPos: " << subPos << " contenido: " << contenido;
+
+				llenarSubLista(&pos, &subPos, &contenido);
+			}
 		}
 };

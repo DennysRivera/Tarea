@@ -69,9 +69,11 @@ void guardar(ListaDobleEnlazada* lista){
 	lista->exportarJson();
 }
 
-void crearListaPrincipal(int* filas, int* columnas, ListaDobleEnlazada* lista){
+void crearListaPrincipal(int* filas, int* columnas, ListaDobleEnlazada* lista, int* opcMenuPrincipal, string* nombreArchivo){
 	for(int i = 0; i < *filas; i++)
 		(*lista).listaPrincipalInsertarFinal(&i, 0);
+
+	if(*opcMenuPrincipal == 2) lista->llenarTabla(nombreArchivo);
 }
 
 void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
@@ -178,10 +180,10 @@ void agregarFila(int* fila, int* columna, ListaDobleEnlazada* lista){
 	}
 }
 
-int menuAcciones(int* nFilas, int* nColumnas, ListaDobleEnlazada* lista){
+int menuAcciones(int* nFilas, int* nColumnas, ListaDobleEnlazada* lista, int* opcMenuPrincipal, string* nombreArchivo){
 	int opc = 0, f = 0, c = 0;
 	string textoCopiado = "";
-	crearListaPrincipal(nFilas, nColumnas, lista);
+	crearListaPrincipal(nFilas, nColumnas, lista, opcMenuPrincipal, nombreArchivo);
 	
 	do{
 		//system("cls");
@@ -246,24 +248,24 @@ int menuPrincipal(){
 int main(){
 	int opcMenuPrincipal, opcMenuAcciones, nFilas, nColumnas;
 	string nombreArchivo;
-	ListaDobleEnlazada lista;
-	// int filas = 5, col = 5, pos = 0;
-	// string contenido = "HOLA";
+	
 	
 	do{
+		ListaDobleEnlazada lista;
+		
 		//system("cls");
 		nFilas = 5;
 		nColumnas = 5;
 		opcMenuPrincipal = menuPrincipal();
 
 		switch(opcMenuPrincipal){
-			case 1: menuAcciones(&nFilas, &nColumnas, &lista); break;
+			case 1: menuAcciones(&nFilas, &nColumnas, &lista, &opcMenuAcciones, &nombreArchivo); break;
 			case 2:
 				cout << "Ingrese el nombre del archivo para abrir: "; cin >> nombreArchivo;
 				nFilas = lista.devolverTotalFilas(&nombreArchivo);
 				nColumnas = lista.devolverTotalColumnas(&nombreArchivo);
 				cout << "nFilas: " << nFilas << " nColumnas: " << nColumnas;
-				menuAcciones(&nFilas, &nColumnas, &lista);
+				menuAcciones(&nFilas, &nColumnas, &lista, &opcMenuPrincipal, &nombreArchivo);
 				break;
 			case 3: cout << "\n\nSaliendo del programa..."; break;
 			default: cout << "\nOpcion invalida!";
