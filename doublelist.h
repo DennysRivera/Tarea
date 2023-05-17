@@ -3,8 +3,11 @@
 #include <cstring>
 #include <cstdlib>
 #include <typeinfo>
+#include <fstream>
+#include "nlohmann/json.hpp"
 
 using namespace std;
+using json = nlohmann::json;
 
 class ListaDobleEnlazada {
 	private:
@@ -263,5 +266,68 @@ class ListaDobleEnlazada {
 			}
 			cout << "\n\n";
 			//cout << n->contenido->contenido;
+		}
+
+		void exportarJson(){
+			json j;
+			string jsonString = "", nombreArchivo = "";
+			NodoDeNodo* actual = primero;
+
+			while(actual != NULL){
+				Nodo* a = actual->inicio;
+				j["filas"] = actual->pos + 1;
+				while(a != NULL){
+					j["Nodos"].push_back({
+						a->pos,
+						a->contenido
+					});
+					a = a->siguiente;
+				}
+				actual = actual->siguiente;
+			}
+			cout << "Nombre para el archivo: "; cin >> nombreArchivo;
+			nombreArchivo += ".json";
+			jsonString = j.dump(2);
+
+			ofstream archivo;
+			archivo.open(nombreArchivo);
+			archivo << jsonString;
+			archivo.close();
+			cout << "Se creo el archivo";
+		}
+
+		int devolverTotalFilas(string* nombreArchivo){
+			json j;
+
+			if(!((*nombreArchivo).find(".json") != string::npos))
+				*nombreArchivo += ".json";
+
+			cout << *nombreArchivo << "\n";
+			
+			ifstream archivo;
+			archivo.open(*nombreArchivo);
+			j << archivo;
+			archivo.close();
+
+			return j["filas"];
+		}
+
+		int devolverTotalColumnas(string* nombreArchivo){
+			json j;
+			int columnas = 0, mayor = 0;
+
+			ifstream archivo;
+			cout << *nombreArchivo << "\n";
+			archivo.open(*nombreArchivo);
+			j << archivo;
+			archivo.close();
+
+			for(int i = 0; i < j["Nodos"].size(); i++){
+				columnas = j["Nodos"][i][0];
+				columnas = columnas % 100;
+				if(columnas > mayor) mayor = columnas;
+			}
+			
+			return (mayor < 5) ? 5 : mayor;
 		}
 };

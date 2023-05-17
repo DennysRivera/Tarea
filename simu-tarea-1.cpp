@@ -2,6 +2,7 @@
 #include <string>
 #include <cstring>
 #include <limits>
+#include <conio.h>
 #include "doublelist.h"
 
 using namespace std;
@@ -64,11 +65,13 @@ void generarHoja(int* nFilas, int* nColumnas, int* filaActual, int* columnaActua
 	}
 }
 
+void guardar(ListaDobleEnlazada* lista){
+	lista->exportarJson();
+}
+
 void crearListaPrincipal(int* filas, int* columnas, ListaDobleEnlazada* lista){
-	for(int i = 0; i < *filas; i++){
+	for(int i = 0; i < *filas; i++)
 		(*lista).listaPrincipalInsertarFinal(&i, 0);
-		
-	}
 }
 
 void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
@@ -175,15 +178,16 @@ void agregarFila(int* fila, int* columna, ListaDobleEnlazada* lista){
 	}
 }
 
-int menuAcciones(){
-	int opc = 0, f = 0, c = 0, nFilas = 5, nColumnas = 5;
+int menuAcciones(int* nFilas, int* nColumnas, ListaDobleEnlazada* lista){
+	int opc = 0, f = 0, c = 0;
 	string textoCopiado = "";
-	ListaDobleEnlazada lista;
-	crearListaPrincipal(&nFilas, &nColumnas, &lista);
+	crearListaPrincipal(nFilas, nColumnas, lista);
 	
 	do{
+		//system("cls");
+		
 		cout << "\n\nSe encuentra en la celda: " << char(65 + (c/10)) << f + 1<< "\n\n";
-		generarHoja(&nFilas, &nColumnas, &f, &c, &lista);
+		generarHoja(nFilas, nColumnas, &f, &c, lista);
 		cout << " \nSeleccione una opcion:\n\n";
 		cout << "1. Escribir\n2. Moverse de celda\n3. Copiar\n4. Cortar\n5. Pegar\n6. Moverse a la izquierda\n7. Moverse a la derecha\n8. Moverse arriba\n9. Moverse abajo\n10. Agregar columna\n11. Agregar fila\n12. Guardar\n13. Menu principal\nOpcion:";
 		cin >> opc;
@@ -195,18 +199,18 @@ int menuAcciones(){
 		}
 		
 		switch(opc){
-			case 1: escribirTexto(&nFilas, &nColumnas, &f, &c, &lista); break;
-			case 2: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
-			case 3: textoCopiado = copiarTexto(&f, &c, &lista, &opc); break;
-			case 4: textoCopiado = copiarTexto(&f, &c, &lista, &opc); break;
-			case 5: pegarTexto(&f, &c, &lista, &textoCopiado); break;
-			case 6: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
-			case 7: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
-			case 8: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
-			case 9: moverCelda(&nFilas, &nColumnas, &f, &c, &opc); break;
-			case 10: agregarColumna(&nFilas, &nColumnas); break;
-			case 11: agregarFila(&nFilas, &nColumnas, &lista); break;
-			case 12: break;
+			case 1: escribirTexto(nFilas, nColumnas, &f, &c, lista); break;
+			case 2: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
+			case 3: textoCopiado = copiarTexto(&f, &c, lista, &opc); break;
+			case 4: textoCopiado = copiarTexto(&f, &c, lista, &opc); break;
+			case 5: pegarTexto(&f, &c, lista, &textoCopiado); break;
+			case 6: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
+			case 7: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
+			case 8: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
+			case 9: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
+			case 10: agregarColumna(nFilas, nColumnas); break;
+			case 11: agregarFila(nFilas, nColumnas, lista); break;
+			case 12: guardar(lista); break;
 			case 13: break;
 			default: cout << "Opcion invalida!"; break;
 		}
@@ -240,25 +244,31 @@ int menuPrincipal(){
 }
 
 int main(){
-	
-	int opcMenuPrincipal, opcMenuAcciones;
+	int opcMenuPrincipal, opcMenuAcciones, nFilas, nColumnas;
+	string nombreArchivo;
+	ListaDobleEnlazada lista;
 	// int filas = 5, col = 5, pos = 0;
 	// string contenido = "HOLA";
 	
 	do{
+		//system("cls");
+		nFilas = 5;
+		nColumnas = 5;
 		opcMenuPrincipal = menuPrincipal();
+
 		switch(opcMenuPrincipal){
-			case 1: menuAcciones();
+			case 1: menuAcciones(&nFilas, &nColumnas, &lista); break;
+			case 2:
+				cout << "Ingrese el nombre del archivo para abrir: "; cin >> nombreArchivo;
+				nFilas = lista.devolverTotalFilas(&nombreArchivo);
+				nColumnas = lista.devolverTotalColumnas(&nombreArchivo);
+				cout << "nFilas: " << nFilas << " nColumnas: " << nColumnas;
+				menuAcciones(&nFilas, &nColumnas, &lista);
+				break;
 			case 3: cout << "\n\nSaliendo del programa..."; break;
 			default: cout << "\nOpcion invalida!";
 		}
 	}while(opcMenuPrincipal != 3);
-
-	// ListaDobleEnlazada lista;
-	// crearListaPrincipal(&filas, &col, &lista);
-	// lista.mostrarListaPrincipal();
-	// lista.llenarSubLista(&pos, &pos, &contenido);
-	
 	
 	return 0;
 }
