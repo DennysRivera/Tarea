@@ -69,14 +69,14 @@ void guardar(ListaDobleEnlazada* lista){
 	lista->exportarJson();
 }
 
-void crearListaPrincipal(int* filas, int* columnas, ListaDobleEnlazada* lista, int* opcMenuPrincipal, string* nombreArchivo){
+void crearListaPrincipal(int* filas, ListaDobleEnlazada* lista, int* opcMenuPrincipal, string* nombreArchivo){
 	for(int i = 0; i < *filas; i++)
 		(*lista).listaPrincipalInsertarFinal(&i, 0);
 
 	if(*opcMenuPrincipal == 2) lista->llenarTabla(nombreArchivo);
 }
 
-void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
+void escribirTexto(int* filaActual, int* columnaActual, ListaDobleEnlazada* lista){
 	string contenido = "", comparacion = "";
 	
 	cout << "\nEscriba una palabra para almacenar en la celda " << char(65 + (*columnaActual)/10) << *filaActual + 1;
@@ -88,11 +88,10 @@ void escribirTexto(int* filas, int* columnas, int* filaActual, int* columnaActua
 		contenido.push_back(' ');
 		
 		int pos = (*filaActual) * 100 + (*columnaActual)/10;
-		cout << pos;
 		
 		comparacion = lista->devolverContenido(filaActual, &pos);
 		comparacion.compare("        ") == 0 ? lista->llenarSubLista(filaActual, &pos, &contenido) : lista->modificarContenido(&contenido, filaActual, &pos);
-		lista->mostrarListaPrincipal();
+		//lista->mostrarListaPrincipal();
 	}
 }
 
@@ -164,15 +163,15 @@ void pegarTexto(int* filaActual, int* columnaActual, ListaDobleEnlazada* lista, 
 		cout << "Entro en el else if con el texto: " << *textoCopiado;
 	}
 	
-	lista->mostrarListaPrincipal();
+	//lista->mostrarListaPrincipal();
 }
 
-void agregarColumna(int* fila, int* columna){
+void agregarColumna(int* columna){
 	if(*columna > 15) cout << "\n\nHa alcanzado el maximo de columnas permitidas\n\n";
 	else *columna += 1;
 }
 
-void agregarFila(int* fila, int* columna, ListaDobleEnlazada* lista){
+void agregarFila(int* fila, ListaDobleEnlazada* lista){
 	if(*fila > 15) cout << "\n\nHa alcanzado el maximo de filas permitidas\n\n";
 	else{
 		*fila += 1;
@@ -183,7 +182,7 @@ void agregarFila(int* fila, int* columna, ListaDobleEnlazada* lista){
 int menuAcciones(int* nFilas, int* nColumnas, ListaDobleEnlazada* lista, int* opcMenuPrincipal, string* nombreArchivo){
 	int opc = 0, f = 0, c = 0;
 	string textoCopiado = "";
-	crearListaPrincipal(nFilas, nColumnas, lista, opcMenuPrincipal, nombreArchivo);
+	crearListaPrincipal(nFilas, lista, opcMenuPrincipal, nombreArchivo);
 	
 	do{
 		//system("cls");
@@ -201,7 +200,7 @@ int menuAcciones(int* nFilas, int* nColumnas, ListaDobleEnlazada* lista, int* op
 		}
 		
 		switch(opc){
-			case 1: escribirTexto(nFilas, nColumnas, &f, &c, lista); break;
+			case 1: escribirTexto(&f, &c, lista); break;
 			case 2: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
 			case 3: textoCopiado = copiarTexto(&f, &c, lista, &opc); break;
 			case 4: textoCopiado = copiarTexto(&f, &c, lista, &opc); break;
@@ -210,8 +209,8 @@ int menuAcciones(int* nFilas, int* nColumnas, ListaDobleEnlazada* lista, int* op
 			case 7: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
 			case 8: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
 			case 9: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
-			case 10: agregarColumna(nFilas, nColumnas); break;
-			case 11: agregarFila(nFilas, nColumnas, lista); break;
+			case 10: agregarColumna(nFilas); break;
+			case 11: agregarFila(nFilas, lista); break;
 			case 12: guardar(lista); break;
 			case 13: break;
 			default: cout << "Opcion invalida!"; break;
@@ -248,6 +247,7 @@ int menuPrincipal(){
 int main(){
 	int opcMenuPrincipal, opcMenuAcciones, nFilas, nColumnas;
 	string nombreArchivo;
+	bool flag;
 	
 	
 	do{
@@ -261,11 +261,11 @@ int main(){
 		switch(opcMenuPrincipal){
 			case 1: menuAcciones(&nFilas, &nColumnas, &lista, &opcMenuAcciones, &nombreArchivo); break;
 			case 2:
+				flag = true;
 				cout << "Ingrese el nombre del archivo para abrir: "; cin >> nombreArchivo;
-				nFilas = lista.devolverTotalFilas(&nombreArchivo);
-				nColumnas = lista.devolverTotalColumnas(&nombreArchivo);
-				cout << "nFilas: " << nFilas << " nColumnas: " << nColumnas;
-				menuAcciones(&nFilas, &nColumnas, &lista, &opcMenuPrincipal, &nombreArchivo);
+				nFilas = lista.devolverTotalFilas(&nombreArchivo, &flag);
+				nColumnas = lista.devolverTotalColumnas(&nombreArchivo, &flag);
+				if(flag) menuAcciones(&nFilas, &nColumnas, &lista, &opcMenuPrincipal, &nombreArchivo);
 				break;
 			case 3: cout << "\n\nSaliendo del programa..."; break;
 			default: cout << "\nOpcion invalida!";

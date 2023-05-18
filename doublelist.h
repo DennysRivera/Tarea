@@ -9,347 +9,354 @@
 using namespace std;
 using json = nlohmann::json;
 
-class ListaDobleEnlazada {
-	private:
-	    struct Nodo{
-	    	string contenido;
-	    	int pos;
-	    	Nodo* siguiente;
-	    	Nodo* anterior;
-		};
-		Nodo nodo;
-		
-		
-		
-		struct NodoDeNodo{
-			Nodo* contenido;
-			int pos;
-			NodoDeNodo* siguiente;
-			NodoDeNodo* anterior;
-			Nodo* inicio = NULL;
-			Nodo* final = NULL;
-		};
-		
-		NodoDeNodo* primero = NULL;
-		NodoDeNodo* ultimo = NULL;
+class ListaDobleEnlazada
+{
+private:
+	struct Nodo
+	{
+		string contenido;
+		int pos;
+		Nodo *siguiente;
+		Nodo *anterior;
+	};
+	Nodo nodo;
 
-	public:
-	    void insertarInicio(string contenido, int* pos, Nodo* inicio, Nodo* final){
-	    	Nodo* nuevo = new Nodo;
-	    	nuevo->contenido = contenido;
-	    	nuevo->pos = *pos;
-	    	nuevo->anterior = NULL;
-	    	nuevo->siguiente = inicio;
-	    	inicio = nuevo;
-	    	if(final == NULL){
-	    		final = nuevo;
-			}
+	struct NodoDeNodo
+	{
+		Nodo *contenido;
+		int pos;
+		NodoDeNodo *siguiente;
+		NodoDeNodo *anterior;
+		Nodo *inicio = NULL;
+		Nodo *final = NULL;
+	};
+
+	NodoDeNodo *primero = NULL;
+	NodoDeNodo *ultimo = NULL;
+
+public:
+	void listaPrincipalInsertarFinal(int *pos, int r)
+	{
+		NodoDeNodo *nuevoNodo = new NodoDeNodo;
+		nuevoNodo->contenido = NULL;
+		nuevoNodo->pos = (*pos) - r;
+		nuevoNodo->siguiente = NULL;
+		if (primero == NULL)
+		{
+			primero = nuevoNodo;
 		}
-		
-		void insertarFinal(string contenido, int* pos, Nodo* inicio, Nodo* final){
-			Nodo* nuevo = new Nodo;
-			nuevo->contenido = contenido;
-			nuevo->pos = *pos;
-			nuevo->siguiente = NULL;
-			if(inicio == NULL){
-				inicio = nuevo;
+		else
+		{
+			NodoDeNodo *p = primero;
+			NodoDeNodo *q = NULL;
+			while (p != NULL)
+			{
+				q = p;
+				p = p->siguiente;
 			}
-			else{
-				Nodo* p = inicio;
-				Nodo* q = NULL;
-				while(p != NULL){
-					q = p;
-					p = p->siguiente;
-				}
-				q->siguiente = nuevo;
-			}
-			final = nuevo;
+			q->siguiente = nuevoNodo;
 		}
-	
-		void mostrarTodo(Nodo* inicio, Nodo* final){
-			Nodo* actual = inicio;
-			while(actual != NULL){
-				cout << "Texto actual: " << actual->contenido;
-				actual = actual->siguiente;
+		ultimo = nuevoNodo;
+	}
+
+	void mostrarListaPrincipal()
+	{
+		NodoDeNodo *actual = primero;
+
+		while (actual != NULL)
+		{
+			Nodo *b = actual->inicio;
+			Nodo *c = actual->final;
+			cout << "\nPosicion de nodo: " << actual->pos;
+			if (b)
+				cout << "\n\tactual->inicio: " << b->pos << " actual->final: " << c->pos;
+
+			Nodo *a = actual->inicio;
+			while (a != NULL)
+			{
+				cout << "\n\tTexto del nodo: " << a->pos << ": " << a->contenido;
+				a = a->siguiente;
 			}
-			cout << "\nInicio: " << inicio->contenido << "\nFinal: " << final->contenido;
+
+			actual = actual->siguiente;
 		}
-		
-		//M�todos para la lista que contandr� la sublista
-		
-		void insertarInicio(int pos){
-	    	NodoDeNodo* nuevoNodo = new NodoDeNodo;
-	    	//nuevoNodo->contenido = NULL;
-	    	nuevoNodo->pos = pos;
-	    	nuevoNodo->anterior = NULL;
-	    	nuevoNodo->siguiente = primero;
-	    	primero = nuevoNodo;
-	    	if(ultimo == NULL){
-	    		ultimo = nuevoNodo;
-			}
-		}
-		
-		void listaPrincipalInsertarFinal(int* pos, int r){
-			NodoDeNodo* nuevoNodo = new NodoDeNodo;
-			nuevoNodo->contenido = NULL;
-			nuevoNodo->pos = (*pos) - r;
-			nuevoNodo->siguiente = NULL;
-			if(primero == NULL){
-				primero = nuevoNodo;
-			}
-			else{
-				NodoDeNodo* p = primero;
-				NodoDeNodo* q = NULL;
-				while(p != NULL){
-					q = p;
-					p = p->siguiente;
-				}
-				q->siguiente = nuevoNodo;
-			}
-			ultimo = nuevoNodo;
-		}
-		
-		void mostrarListaPrincipal(){
-			NodoDeNodo* actual = primero;
-			
-			while(actual != NULL){
-				Nodo* b = actual->inicio;
-				Nodo* c = actual->final;
-				cout << "\nPosicion de nodo: " << actual->pos;
-				if(b) cout << "\n\tactual->inicio: " << b->pos << " actual->final: " << c->pos;
-				
-				Nodo* a = actual->inicio;
-				while(a != NULL){
-					cout << "\n\tTexto del nodo: " << a->pos << ": " << a->contenido;
+		cout << "\nInicio: " << primero->pos << "\nFinal: " << ultimo->pos << "\n";
+	}
+
+	void eliminarNodo(int *pos, int *subPos)
+	{
+		NodoDeNodo *actual = primero;
+		while (actual != NULL)
+		{
+			if (actual->pos == *pos)
+			{
+				Nodo *a = actual->inicio, *b = NULL;
+				while (a != NULL && a->pos != *subPos)
+				{
+					b = a;
 					a = a->siguiente;
 				}
+				cout << "Se detuvo en nodo subPos: " << a->pos << "\n";
 
-				actual = actual->siguiente;
+				if (b == NULL && a->siguiente == NULL)
+				{
+					a->anterior = NULL;
+					actual->final = NULL;
+					actual->inicio = NULL;
+				}
+
+				else if (b == NULL)
+				{
+					actual->inicio = a->siguiente;
+					actual->inicio->anterior = NULL;
+				}
+				else if (a->siguiente != NULL)
+				{
+					b->siguiente = a->siguiente;
+					a->siguiente->anterior = a->anterior;
+				}
+				else if (a->siguiente == NULL)
+				{
+					b->siguiente = NULL;
+					actual->final = a->anterior;
+				}
+
+				else if (a == actual->final)
+				{
+					a->anterior->siguiente = NULL;
+					a->anterior = NULL;
+				}
+
+				delete (a);
 			}
-			cout << "\nInicio: " << primero->pos << "\nFinal: " << ultimo->pos << "\n";
+			actual = actual->siguiente;
 		}
+		//mostrarListaPrincipal();
+	}
 
-		void buscarListaPrincipal(int* pos){
-			NodoDeNodo* n = primero;
-			Nodo* nuevo = new Nodo;
-			while(n != NULL){
-				if(n->pos == *pos){
-					//n->contenido = new Nodo;
+	string devolverContenido(int *pos, int *subPos)
+	{
+		NodoDeNodo *actual = primero;
+		while (actual != NULL)
+		{
+			if (actual->pos == *pos)
+			{
+				Nodo *a = actual->inicio;
+				while (a != NULL)
+				{
+					if (a->pos == *subPos)
+					{
+						return a->contenido;
+					}
+					a = a->siguiente;
+				}
+			}
+			actual = actual->siguiente;
+		}
+		return "        ";
+	}
+
+	void modificarContenido(string *contenido, int *pos, int *subPos)
+	{
+		NodoDeNodo *actual = primero;
+		while (actual != NULL)
+		{
+			if (actual->pos == *pos)
+			{
+				Nodo *a = actual->inicio;
+				while (a != NULL)
+				{
+					if (a->pos == *subPos)
+					{
+						a->contenido = *contenido;
+					}
+					a = a->siguiente;
+				}
+			}
+			actual = actual->siguiente;
+		}
+	}
+
+	void insertarInicioSubLista(string* contenido, int* pos, Nodo* nuevo, NodoDeNodo* nodo)
+	{
+		nuevo->contenido = *contenido;
+		nuevo->pos = *pos;
+		nuevo->anterior = NULL;
+		nuevo->siguiente = nodo->inicio;
+
+		nodo->inicio = nuevo;
+	}
+
+	void insertarFinalSubLista(string* contenido, int* pos, Nodo* nuevo, NodoDeNodo* nodo)
+	{
+		nuevo->contenido = *contenido;
+		nuevo->pos = *pos;
+		nuevo->siguiente = NULL;
+
+		Nodo *p = nodo->inicio;
+		Nodo *q = NULL;
+
+		while (p != NULL)
+		{
+			q = p;
+			p = p->siguiente;
+		}
+			
+		nuevo->anterior = q;
+		q->siguiente = nuevo;
+
+		nodo->final = nuevo;
+	}
+
+	void insertarMedioSubLista(string* contenido, int* pos, Nodo* nuevo, NodoDeNodo* nodo){
+		bool flag = true;
+		nuevo->contenido = *contenido;
+		nuevo->pos = *pos;
+
+		Nodo* p = nodo->inicio;
+
+		while(p != NULL && flag){
+			if(p->pos < *pos && p->siguiente->pos > *pos){
+				nuevo->anterior = p;
+				nuevo->siguiente = p->siguiente;
+				p->siguiente->anterior = nuevo;
+				p->siguiente = nuevo;
+				flag = false;
+			}
+			p = p->siguiente;
+		}
+	}
+
+	void llenarSubLista(int *pos, int *subPos, string *contenido)
+	{
+		NodoDeNodo *n = primero;
+		Nodo *nuevo = new Nodo;
+		while (n != NULL)
+		{
+			if (n->pos == *pos)
+			{
+				if (n->contenido == NULL)
+				{
 					n->contenido = nuevo;
+
+					insertarInicioSubLista(contenido, subPos, nuevo, n);
+					n->final = nuevo;
 				}
-				n = n->siguiente;
-			}
-		}
-		
-		void eliminarNodo(int* pos, int* subPos){
-			NodoDeNodo* actual = primero;
-			while(actual != NULL){
-				if(actual->pos == *pos){
-					Nodo* a = actual->inicio, *b = NULL;
-					while(a != NULL && a->pos != *subPos){
-						b = a;
-						a = a->siguiente;
-					}
-					cout << "Se detuvo en nodo subPos: " << a->pos << "\n";
-					
-					if(b == NULL && a->siguiente == NULL){
-						a->anterior = NULL;
-						actual->final = NULL;
-						actual->inicio = NULL;
-					}
-					
-					else if(b == NULL){
-						actual->inicio = a->siguiente;
-						actual->inicio->anterior = NULL;
-					}
-					else if(a->siguiente != NULL){
-						b->siguiente = a->siguiente;
-						a->siguiente->anterior = a->anterior;
-					}
-					else if(a->siguiente = NULL){
-						b->siguiente = NULL;
-						actual->final = a->anterior;
-					}
-					
-					else if(a == actual->final){
-						a->anterior->siguiente = NULL;
-						a->anterior = NULL;
-					}
-					
-					
-					delete(a);
-					
+				else
+				{
+					if(*subPos < n->inicio->pos) insertarInicioSubLista(contenido, subPos, nuevo, n);
+					else if(*subPos > n->final->pos) insertarFinalSubLista(contenido, subPos, nuevo, n);
+					else if(*subPos > n->inicio->pos && *subPos < n->final->pos) insertarMedioSubLista(contenido, subPos, nuevo, n);
 				}
-				actual = actual->siguiente;
+
+				//cout << "n inicio: " << n->inicio->contenido << "\nn final: " << n->final->contenido;
 			}
-			mostrarListaPrincipal();
+			n = n->siguiente;
 		}
+		//cout << "\n\n";
+	}
 
-		string devolverContenido(int* pos, int* subPos){
-			NodoDeNodo* actual = primero;
-			while(actual != NULL){
-				if(actual->pos == *pos){
-					Nodo* a = actual->inicio;
-					while(a != NULL){
-						if(a->pos == *subPos){
-							return a->contenido;
-						}
-						a = a->siguiente;
-					}
-				}
-				actual = actual->siguiente;
+	void exportarJson()
+	{
+		json j;
+		string jsonString = "", nombreArchivo = "";
+		NodoDeNodo *actual = primero;
+
+		while (actual != NULL)
+		{
+			Nodo *a = actual->inicio;
+			j["filas"] = actual->pos + 1;
+			while (a != NULL)
+			{
+				j["Nodos"].push_back({actual->pos,
+									  a->pos,
+									  a->contenido});
+				a = a->siguiente;
 			}
-			return "        ";
+			actual = actual->siguiente;
 		}
-		
-		void modificarContenido(string* contenido, int* pos, int* subPos){
-			NodoDeNodo* actual = primero;
-			while(actual != NULL){
-				if(actual->pos == *pos){
-					Nodo* a = actual->inicio;
-					while(a != NULL){
-						if(a->pos == *subPos){
-							a->contenido = *contenido;
-						}
-						a = a->siguiente;
-					}
-				}
-				actual = actual->siguiente;
-			}
-		}
+		cout << "\nNombre para el archivo (sin extension): ";
+		cin >> nombreArchivo;
+		nombreArchivo += ".json";
+		jsonString = j.dump(2);
 
-		void insertarFinalSubLista(string* contenido, int* pos, Nodo* nuevo, NodoDeNodo* nodo){
-			
-			nuevo->contenido = *contenido;
-			nuevo->pos = *pos;
-			nuevo->siguiente = NULL;
-			if(nodo->inicio == NULL){
-				nodo->inicio = nuevo;
-			}
-			else{
-				Nodo* p = nodo->inicio;
-				Nodo* q = NULL;
-				while(p != NULL){
-					q = p;
-					p = p->siguiente;
-				}
-				nuevo->anterior = q;
-				q->siguiente = nuevo;
-			}
-			nodo->final = nuevo;
-		}
+		ofstream archivo;
+		archivo.open(nombreArchivo);
+		archivo << jsonString;
+		archivo.close();
+		cout << "\n\nSe creo el archivo\n\n";
+	}
 
-		void llenarSubLista(int* pos, int* subPos, string* contenido){
-			NodoDeNodo* n = primero;
-			Nodo* nuevo = new Nodo;
-			while(n != NULL){
-				if(n->pos == *pos){
-					if(n->contenido == NULL){
-						n->contenido = nuevo;
+	int devolverTotalFilas(string *nombreArchivo, bool* flag)
+	{
+		json j;
 
-						insertarFinalSubLista(contenido, subPos, nuevo, n);
-						n->inicio = nuevo;
-						n->final = nuevo;
-					}
-					//Posiblemente se puede retirar este else
-					else{
-						insertarFinalSubLista(contenido, subPos, nuevo, n);
-						n->final = nuevo;
-					}
-					//cout << nuevo->contenido;
+		if(!((*nombreArchivo).find(".json") != string::npos))
+			*nombreArchivo += ".json";
 
-					
+		ifstream archivo;
+		archivo.open(*nombreArchivo);
 
-				cout << "n inicio: " << n->inicio->contenido << "\nn final: " << n->final->contenido;
-				}
-				n = n->siguiente;
-			}
-			cout << "\n\n";
-			//cout << n->contenido->contenido;
-		}
-
-		void exportarJson(){
-			json j;
-			string jsonString = "", nombreArchivo = "";
-			NodoDeNodo* actual = primero;
-
-			while(actual != NULL){
-				Nodo* a = actual->inicio;
-				j["filas"] = actual->pos + 1;
-				while(a != NULL){
-					j["Nodos"].push_back({
-						actual->pos,
-						a->pos,
-						a->contenido
-					});
-					a = a->siguiente;
-				}
-				actual = actual->siguiente;
-			}
-			cout << "Nombre para el archivo: "; cin >> nombreArchivo;
-			nombreArchivo += ".json";
-			jsonString = j.dump(2);
-
-			ofstream archivo;
-			archivo.open(nombreArchivo);
-			archivo << jsonString;
-			archivo.close();
-			cout << "Se creo el archivo";
-		}
-
-		int devolverTotalFilas(string* nombreArchivo){
-			json j;
-
-			if(!((*nombreArchivo).find(".json") != string::npos))
-				*nombreArchivo += ".json";
-
-			cout << *nombreArchivo << "\n";
-			
-			ifstream archivo;
-			archivo.open(*nombreArchivo);
+		if(archivo.is_open()){
 			j << archivo;
 			archivo.close();
-
 			return j["filas"];
 		}
+		else{
+			cout << "No se pudo abrir el archivo\n\n";
+			*flag = false;
+			return 5;
+		}
+		
+	}
 
-		int devolverTotalColumnas(string* nombreArchivo){
-			json j;
-			int columnas = 0, mayor = 0;
+	int devolverTotalColumnas(string *nombreArchivo, bool* flag)
+	{
+		json j;
+		int columnas = 0, mayor = 0;
 
-			ifstream archivo;
-			cout << *nombreArchivo << "\n";
-			archivo.open(*nombreArchivo);
+		ifstream archivo;
+		archivo.open(*nombreArchivo);
+
+		if(archivo.is_open()){
 			j << archivo;
 			archivo.close();
 
-			for(int i = 0; i < j["Nodos"].size(); i++){
+			for (int i = 0; i < j["Nodos"].size(); i++)
+			{
 				columnas = j["Nodos"][i][1];
 				columnas = columnas % 100;
-				if(columnas > mayor) mayor = columnas;
+				if (columnas > mayor)
+					mayor = columnas;
 			}
-			
-			return (mayor < 5) ? 5 : mayor;
+
+			return (mayor < 5) ? 5 : mayor + 1;
 		}
-
-		void llenarTabla(string* nombreArchivo){
-			json j;
-			int pos = 0, subPos = 0;
-			string contenido = "";
-
-			ifstream archivo;
-			cout << *nombreArchivo << "\n";
-			archivo.open(*nombreArchivo);
-			j << archivo;
-			archivo.close();
-
-			for(int i = 0; i < j["Nodos"].size(); i++){
-				pos = j["Nodos"][i][0];
-				subPos = j["Nodos"][i][1];
-				contenido = j["Nodos"][i][2];
-				cout << "Pos: " << pos << " subPos: " << subPos << " contenido: " << contenido;
-
-				llenarSubLista(&pos, &subPos, &contenido);
-			}
+		else{
+			*flag = false;
+			return 5;
 		}
+	}
+
+	void llenarTabla(string *nombreArchivo)
+	{
+		json j;
+		int pos = 0, subPos = 0;
+		string contenido = "";
+
+		ifstream archivo;
+		cout << *nombreArchivo << "\n";
+		archivo.open(*nombreArchivo);
+		j << archivo;
+		archivo.close();
+
+		for (int i = 0; i < j["Nodos"].size(); i++)
+		{
+			pos = j["Nodos"][i][0];
+			subPos = j["Nodos"][i][1];
+			contenido = j["Nodos"][i][2];
+
+			llenarSubLista(&pos, &subPos, &contenido);
+		}
+	}
 };
