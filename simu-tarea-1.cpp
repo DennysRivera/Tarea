@@ -111,7 +111,7 @@ void generarHoja(int* nFilas, int* nColumnas, int* filaActual, int* columnaActua
 			}
 			
 		}
-		cout << "|\n  ";
+		cout << "\n  ";
 
 		// El tercer for imprime la línea inferior de la casilla
 		// Es similar a la primera línea, excepto que aquí imprime
@@ -340,7 +340,7 @@ void agregarColumna(int* columna){
 // Funcion simple para la adicion de filas, con un maximo de 25 filas
 void agregarFila(int* fila, ListaDobleEnlazada* lista){
 	// Se le indica al usuario si ya ha alcanzado el maximo
-	if(*fila > 25) cout << "\n\nHa alcanzado el maximo de filas permitidas\n\n";
+	if(*fila > 24) cout << "\n\nHa alcanzado el maximo de filas permitidas\n\n";
 	else{
 		// Si se puede agregar otra fila,
 		// entonces también se debe agregar otro nodo a la lista "principal"
@@ -418,7 +418,7 @@ int menuAcciones(int* nFilas, int* nColumnas, ListaDobleEnlazada* lista, int* op
 			case 7: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
 			case 8: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
 			case 9: moverCelda(nFilas, nColumnas, &f, &c, &opc); break;
-			case 10: agregarColumna(nFilas); cambio = true; break;
+			case 10: agregarColumna(nColumnas); cambio = true; break;
 			case 11: agregarFila(nFilas, lista); cambio = true; break;
 			case 12: guardar(lista); cambio = false; break;
 			case 13: confirmarGuardar(&cambio, lista); cout << "Regresando al menu principal...\n\n"; break;
